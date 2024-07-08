@@ -7,6 +7,7 @@ import {
   removeTask,
   generateNextId,
 } from "../model/taskModel";
+import { pick } from "lodash";
 
 export const fetchTasks = (): Task[] => getAllTasks();
 
@@ -23,13 +24,14 @@ export const createTask = (title: string, completed: boolean): Task => {
 
 export const modifyTask = (
   id: number,
-  title?: string,
-  completed?: boolean
+  updates: Partial<Omit<Task, "id">>
 ): Task | null => {
   const task = getTaskById(id);
   if (!task) return null;
-  if (title !== undefined) task.title = title;
-  if (completed !== undefined) task.completed = completed;
+
+  const allowedUpdates = pick(updates, ["title", "completed"]);
+  Object.assign(task, allowedUpdates);
+
   return updateTask(task);
 };
 

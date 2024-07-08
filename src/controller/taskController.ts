@@ -59,8 +59,8 @@ export const updateExistingTask = (
 ): void => {
   try {
     const taskId = parseInt(req.params.id);
-    const { title, completed } = req.body;
-    const updatedTask = modifyTask(taskId, title, completed);
+    const updates = req.body;
+    const updatedTask = modifyTask(taskId, updates);
     if (!updatedTask) {
       return next(new ApiError(404, "Task not found"));
     }
