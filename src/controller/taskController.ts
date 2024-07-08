@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import ApiError from "../utils/apiError";
 import {
   fetchTasks,
   fetchTaskById,
@@ -7,43 +8,81 @@ import {
   deleteTask,
 } from "../service/taskService";
 
-export const getAllTasks = (req: Request, res: Response): void => {
-  res.json(fetchTasks());
+export const getAllTasks = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  try {
+    const tasks = fetchTasks();
+    res.json(tasks);
+  } catch (error) {
+    next(new ApiError(500, "Failed to fetch tasks"));
+  }
 };
 
-export const getTask = (req: Request, res: Response): void => {
-  const taskId = parseInt(req.params.id);
-  const task = fetchTaskById(taskId);
-  if (!task) {
-    res.status(404).json({ message: "Task not found" });
-  } else {
+export const getTask = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  try {
+    const taskId = parseInt(req.params.id);
+    const task = fetchTaskById(taskId);
+    if (!task) {
+      return next(new ApiError(404, "Task not found"));
+    }
     res.json(task);
+  } catch (error) {
+    next(new ApiError(500, "Failed to fetch task"));
   }
 };
 
-export const createNewTask = (req: Request, res: Response): void => {
-  const { title, completed } = req.body;
-  const newTask = createTask(title, completed ?? false);
-  res.status(201).json(newTask);
+export const createNewTask = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  try {
+    const { title, completed } = req.body;
+    const newTask = createTask(title, completed ?? false);
+    res.status(201).json(newTask);
+  } catch (error) {
+    next(new ApiError(500, "Failed to create task"));
+  }
 };
 
-export const updateExistingTask = (req: Request, res: Response): void => {
-  const taskId = parseInt(req.params.id);
-  const { title, completed } = req.body;
-  const updatedTask = modifyTask(taskId, title, completed);
-  if (!updatedTask) {
-    res.status(404).json({ message: "Task not found" });
-  } else {
+export const updateExistingTask = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  try {
+    const taskId = parseInt(req.params.id);
+    const { title, completed } = req.body;
+    const updatedTask = modifyTask(taskId, title, completed);
+    if (!updatedTask) {
+      return next(new ApiError(404, "Task not found"));
+    }
     res.json(updatedTask);
+  } catch (error) {
+    next(new ApiError(500, "Failed to update task"));
   }
 };
 
-export const deleteExistingTask = (req: Request, res: Response): void => {
-  const taskId = parseInt(req.params.id);
-  const deletedTask = deleteTask(taskId);
-  if (!deletedTask) {
-    res.status(404).json({ message: "Task not found" });
-  } else {
+export const deleteExistingTask = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  try {
+    const taskId = parseInt(req.params.id);
+    const deletedTask = deleteTask(taskId);
+    if (!deletedTask) {
+      return next(new ApiError(404, "Task not found"));
+    }
     res.json(deletedTask);
+  } catch (error) {
+    next(new ApiError(500, "Failed to delete task"));
   }
 };
