@@ -1,6 +1,6 @@
 import express from "express";
 import config from "./config";
-import router from "./routes/tasks";
+import router from "./routes/taskRoutes";
 
 const app = express();
 app.use(express.json());
