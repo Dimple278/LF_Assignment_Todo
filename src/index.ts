@@ -8,5 +8,5 @@ app.use(express.json());
 app.use(router);
 
 app.listen(config.port, () => {
-  console.log(`Server listening at port 8080`);
+  console.log(`Server listening at port:${config.port}`);
 });
