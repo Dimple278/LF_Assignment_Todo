@@ -7,6 +7,7 @@ import {
   modifyTask,
   deleteTask,
 } from "../service/taskService";
+import { Task } from "../interfaces/taskInterface";
 
 export const getAllTasks = (
   req: Request,
@@ -59,7 +60,7 @@ export const updateExistingTask = (
 ): void => {
   try {
     const taskId = parseInt(req.params.id);
-    const updates = req.body;
+    const updates: Pick<Task, "title" | "completed"> = req.body;
     const updatedTask = modifyTask(taskId, updates);
     if (!updatedTask) {
       return next(new ApiError(404, "Task not found"));
