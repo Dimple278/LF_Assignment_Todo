@@ -23,7 +23,7 @@ export const createTask = (title: string, completed: boolean): Task => {
 
 export const modifyTask = (
   id: number,
-  updates: Pick<Task, "title" | "completed">
+  updates: Partial<Pick<Task, "title" | "completed">>
 ): Task | null => {
   const task = getTaskById(id);
   if (!task) return null;

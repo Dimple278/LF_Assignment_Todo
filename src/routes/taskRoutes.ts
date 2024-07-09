@@ -8,15 +8,21 @@ import {
 } from "../controller/taskController";
 import {
   validateTaskId,
-  validateTaskBody,
+  validatePostTaskBody,
+  validatePutTaskBody,
 } from "../middleware/validationMiddleware";
 
 const router = express.Router();
 
 router.get("/tasks", getAllTasks);
 router.get("/tasks/:id", validateTaskId, getTask);
-router.post("/tasks", validateTaskBody, createNewTask);
-router.put("/tasks/:id", validateTaskId, validateTaskBody, updateExistingTask);
+router.post("/tasks", validatePostTaskBody, createNewTask);
+router.put(
+  "/tasks/:id",
+  validateTaskId,
+  validatePutTaskBody,
+  updateExistingTask
+);
 router.delete("/tasks/:id", validateTaskId, deleteExistingTask);
 
 export default router;

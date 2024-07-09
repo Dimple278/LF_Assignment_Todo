@@ -13,7 +13,7 @@ export const validateTaskId = (
   next();
 };
 
-export const validateTaskBody = (
+export const validatePostTaskBody = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -26,6 +26,23 @@ export const validateTaskBody = (
         "Invalid task data: title is required and must be a string"
       )
     );
+  }
+  if (completed !== undefined && typeof completed !== "boolean") {
+    return next(
+      new ApiError(400, "Invalid task data: completed must be a boolean")
+    );
+  }
+  next();
+};
+
+export const validatePutTaskBody = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const { title, completed } = req.body;
+  if (title !== undefined && typeof title !== "string") {
+    return next(new ApiError(400, "Invalid task data: title must be a string"));
   }
   if (completed !== undefined && typeof completed !== "boolean") {
     return next(

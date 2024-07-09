@@ -45,8 +45,8 @@ export const createNewTask = (
   next: NextFunction
 ): void => {
   try {
-    const { title, completed } = req.body;
-    const newTask = createTask(title, completed ?? false);
+    const { title, completed = false } = req.body;
+    const newTask = createTask(title, completed);
     res.status(201).json(newTask);
   } catch (error) {
     next(new ApiError(500, "Failed to create task"));
@@ -60,7 +60,8 @@ export const updateExistingTask = (
 ): void => {
   try {
     const taskId = parseInt(req.params.id);
-    const updates: Pick<Task, "title" | "completed"> = req.body;
+    const updates: Partial<Pick<Task, "title" | "completed">> = req.body;
+
     const updatedTask = modifyTask(taskId, updates);
     if (!updatedTask) {
       return next(new ApiError(404, "Task not found"));
